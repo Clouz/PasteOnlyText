@@ -1,0 +1,47 @@
+﻿<Window x:Class="PasteOnlyText.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PasteOnlyText"
+        mc:Ignorable="d"
+        Title="PasteOnlyText" Height="450" Width="800"
+        Closing="Window_Closing"
+        KeyDown="OnKeyDownHandler">
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Save Image..." />
+                <MenuItem Header="_Settings..." />
+                <Separator />
+                <MenuItem Header="_Exit" />
+            </MenuItem>
+            
+            <MenuItem Header="_Edit">
+            </MenuItem>
+
+            <MenuItem Header="_Tools">
+                <MenuItem Header="_ALL UPPERCASE" />
+                <MenuItem Header="_all lowercase" />
+                <MenuItem Header="_All Initial Uppercase" />
+                <MenuItem Header="_First uppercase other lowercase" />
+                <MenuItem Header="_Reset Original Case" />
+            </MenuItem>
+
+            <MenuItem Header="_Help">
+            </MenuItem>
+        </Menu>
+
+        <Grid DockPanel.Dock="Bottom">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="20"/>
+        </Grid.RowDefinitions>
+
+        <TextBox Name="MainText" Grid.Row="0" TextChanged="MainText_TextChanged"/>
+        <StatusBar Name="MainStatusBar" Grid.Row="1">
+            <TextBlock Name="MainStatusBar_Text" />
+        </StatusBar>
+    </Grid>
+    </DockPanel>
+</Window>
