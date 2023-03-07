@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,11 +21,33 @@ namespace PasteOnlyText
     /// </summary>
     public partial class MainWindow : Window
     {
+        public static RoutedCommand CustomRoutedCommand = new RoutedCommand();
+
+        private void ExecutedCustomCommand(object sender, ExecutedRoutedEventArgs e)
+        {
+            MessageBox.Show("Custom Command Executed");
+        }
+
+        private void CanExecuteCustomCommand(object sender, CanExecuteRoutedEventArgs e)
+        {
+            Control? target = e.Source as Control;
+
+            if (target != null)
+            {
+                e.CanExecute = true;
+            }
+            else
+            {
+                e.CanExecute = false;
+            }
+        }
 
         public MainWindow()
         {
             InitializeComponent();
+
             MainText.Text = Clipboard.GetText();
+
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -34,6 +57,7 @@ namespace PasteOnlyText
 
         private void OnKeyDownHandler(object sender, KeyEventArgs e)
         {
+            
             if (e.Key == Key.Escape)
             {
                 Close();
@@ -43,6 +67,7 @@ namespace PasteOnlyText
         private void MainText_TextChanged(object sender, TextChangedEventArgs e)
         {
             String TextLength = "Characters: " + MainText.Text.Length.ToString();
+            //TODO: Update LineCount after layout update
             String NumberOfRows = "Rows: " + MainText.LineCount.ToString();
             string[] s = new string[] { TextLength, NumberOfRows };
 
