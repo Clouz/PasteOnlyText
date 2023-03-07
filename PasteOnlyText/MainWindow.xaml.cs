@@ -42,7 +42,11 @@ namespace PasteOnlyText
 
         private void MainText_TextChanged(object sender, TextChangedEventArgs e)
         {
-            MainStatusBar_Text.Text = "Characters: " + MainText.Text.Length.ToString();
+            String TextLength = "Characters: " + MainText.Text.Length.ToString();
+            String NumberOfRows = "Rows: " + MainText.LineCount.ToString();
+            string[] s = new string[] { TextLength, NumberOfRows };
+
+            MainStatusBar_Text.Text = string.Join(" | ", s);
         }
     }
 }

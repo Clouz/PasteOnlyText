@@ -38,7 +38,7 @@
             <RowDefinition Height="20"/>
         </Grid.RowDefinitions>
 
-        <TextBox Name="MainText" Grid.Row="0" TextChanged="MainText_TextChanged"/>
+            <TextBox Name="MainText" Grid.Row="0" TextChanged="MainText_TextChanged" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
         <StatusBar Name="MainStatusBar" Grid.Row="1">
             <TextBlock Name="MainStatusBar_Text" />
         </StatusBar>
