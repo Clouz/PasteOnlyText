@@ -10,13 +10,33 @@
         KeyDown="OnKeyDownHandler">
     
     <Window.CommandBindings>
-        <CommandBinding Command="{x:Static local:MainWindow.CustomRoutedCommand}"
-                    Executed="ExecutedCustomCommand"
-                    CanExecute="CanExecuteCustomCommand" />
+        <CommandBinding Command="{x:Static local:MainWindow.TextModifierCommand_Uppercase}"
+                    Executed="ExecutedTextModifierCommand_Uppercase"
+                    CanExecute="CanExecuteTextModifierCommand" />
+
+        <CommandBinding Command="{x:Static local:MainWindow.TextModifierCommand_Lowercase}"
+                    Executed="ExecutedTextModifierCommand_Lowercase"
+                    CanExecute="CanExecuteTextModifierCommand" />
+
+        <CommandBinding Command="{x:Static local:MainWindow.TextModifierCommand_InitialUppercase}"
+                    Executed="ExecutedTextModifierCommand_InitialUppercase"
+                    CanExecute="CanExecuteTextModifierCommand" />
+
+        <CommandBinding Command="{x:Static local:MainWindow.TextModifierCommand_FirstUppercase}"
+                    Executed="ExecutedTextModifierCommand_FirstUppercase"
+                    CanExecute="CanExecuteTextModifierCommand" />
+
+        <CommandBinding Command="{x:Static local:MainWindow.TextModifierCommand_Reset}"
+                    Executed="ExecutedTextModifierCommand_Reset"
+                    CanExecute="CanExecuteTextModifierCommand" />
     </Window.CommandBindings>
 
     <Window.InputBindings>
-        <KeyBinding Key="B" Modifiers="Control" Command="{x:Static local:MainWindow.CustomRoutedCommand}"/>
+        <KeyBinding Key="A" Modifiers="Ctrl+Shift" Command="{x:Static local:MainWindow.TextModifierCommand_Uppercase}"/>
+        <KeyBinding Key="Z" Modifiers="Ctrl+Shift" Command="{x:Static local:MainWindow.TextModifierCommand_Lowercase}"/>
+        <KeyBinding Key="X" Modifiers="Ctrl+Shift" Command="{x:Static local:MainWindow.TextModifierCommand_InitialUppercase}"/>
+        <KeyBinding Key="C" Modifiers="Ctrl+Shift" Command="{x:Static local:MainWindow.TextModifierCommand_FirstUppercase}"/>
+        <KeyBinding Key="S" Modifiers="Ctrl+Shift" Command="{x:Static local:MainWindow.TextModifierCommand_Reset}"/>
     </Window.InputBindings>
 
     <DockPanel>
@@ -32,11 +52,11 @@
             </MenuItem>
 
             <MenuItem Header="_Tools">
-                <MenuItem Header="_ALL UPPERCASE" Command="{x:Static local:MainWindow.CustomRoutedCommand}" InputGestureText="Ctrl+B"/>
-                <MenuItem Header="_all lowercase" />
-                <MenuItem Header="_All Initial Uppercase" />
-                <MenuItem Header="_First uppercase other lowercase" />
-                <MenuItem Header="_Reset Original Case" />
+                <MenuItem Header="_ALL UPPERCASE" Command="{x:Static local:MainWindow.TextModifierCommand_Uppercase}" InputGestureText="Ctrl+Shift+A"/>
+                <MenuItem Header="_all lowercase" Command="{x:Static local:MainWindow.TextModifierCommand_Lowercase}" InputGestureText="Ctrl+Shift+Z"/>
+                <MenuItem Header="_All Initial Uppercase" Command="{x:Static local:MainWindow.TextModifierCommand_InitialUppercase}" InputGestureText="Ctrl+Shift+X"/>
+                <MenuItem Header="_First uppercase other lowercase" Command="{x:Static local:MainWindow.TextModifierCommand_FirstUppercase}" InputGestureText="Ctrl+Shift+C"/>
+                <MenuItem Header="_Reset Original Case" Command="{x:Static local:MainWindow.TextModifierCommand_Reset}" InputGestureText="Ctrl+Shift+S"/>
             </MenuItem>
 
             <MenuItem Header="_Help">
