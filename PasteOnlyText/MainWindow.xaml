@@ -6,8 +6,7 @@
         xmlns:local="clr-namespace:PasteOnlyText"
         mc:Ignorable="d"
         Title="PasteOnlyText" Height="450" Width="800"
-        Closing="Window_Closing"
-        KeyDown="OnKeyDownHandler">
+        Closing="Window_Closing">
     
     <Window.CommandBindings>
         <CommandBinding Command="{x:Static local:MainWindow.TextModifierCommand_Uppercase}"
@@ -29,6 +28,10 @@
         <CommandBinding Command="{x:Static local:MainWindow.TextModifierCommand_Reset}"
                     Executed="ExecutedTextModifierCommand_Reset"
                     CanExecute="CanExecuteTextModifierCommand" />
+
+        <CommandBinding Command="{x:Static local:MainWindow.Command_Exit}"
+                    Executed="ExecutedExitCommand"
+                    CanExecute="CanExecuteCommand" />
     </Window.CommandBindings>
 
     <Window.InputBindings>
@@ -37,6 +40,7 @@
         <KeyBinding Key="X" Modifiers="Ctrl+Shift" Command="{x:Static local:MainWindow.TextModifierCommand_InitialUppercase}"/>
         <KeyBinding Key="C" Modifiers="Ctrl+Shift" Command="{x:Static local:MainWindow.TextModifierCommand_FirstUppercase}"/>
         <KeyBinding Key="S" Modifiers="Ctrl+Shift" Command="{x:Static local:MainWindow.TextModifierCommand_Reset}"/>
+        <KeyBinding Key="Esc"  Command="{x:Static local:MainWindow.Command_Exit}"/>
     </Window.InputBindings>
 
     <DockPanel>
@@ -45,7 +49,7 @@
                 <MenuItem Header="_Save Image..." />
                 <MenuItem Header="_Settings..." />
                 <Separator />
-                <MenuItem Header="_Exit" />
+                <MenuItem Header="_Exit" Command="{x:Static local:MainWindow.Command_Exit}" InputGestureText="Esc"/>
             </MenuItem>
             
             <MenuItem Header="_Edit">
@@ -69,7 +73,7 @@
             <RowDefinition Height="20"/>
         </Grid.RowDefinitions>
 
-            <TextBox Name="MainText" Grid.Row="0" TextChanged="MainText_TextChanged" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
+            <TextBox Name="MainText" Grid.Row="0" TextChanged="MainText_TextChanged" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" AcceptsTab="True"/>
         <StatusBar Name="MainStatusBar" Grid.Row="1">
             <TextBlock Name="MainStatusBar_Text" />
         </StatusBar>

@@ -29,7 +29,33 @@ namespace PasteOnlyText
             get => _sourceString;
             set {
                 _sourceString = value;
-                MainText.Text = Clipboard.GetText();
+                MainText.Text = value;
+            }
+        }
+
+        private string? ClipboardDataString
+        {
+            get {
+                if (Clipboard.ContainsFileDropList()) // If Clipboard has one or more files
+                {
+                    var files = Clipboard.GetFileDropList().Cast<string>().ToArray(); // Get all files from clipboard
+                    string filepath = "";
+                    foreach (var file in files)
+                    {
+                        filepath = filepath + file + "\n";
+                    }
+
+                    filepath = filepath.TrimEnd();
+
+                    return filepath;
+
+                } else {
+                    return Clipboard.GetText();
+                }
+            }
+            set
+            {
+                Clipboard.SetText(value);
             }
         }
 
@@ -37,7 +63,7 @@ namespace PasteOnlyText
         {
             InitializeComponent();
 
-            SourceString = Clipboard.GetText();
+            SourceString = ClipboardDataString;
 
         }
 
@@ -46,20 +72,12 @@ namespace PasteOnlyText
             Clipboard.SetText(MainText.Text);
         }
 
-        private void OnKeyDownHandler(object sender, KeyEventArgs e)
-        {
-            
-            if (e.Key == Key.Escape)
-            {
-                Close();
-            }
-        }
-
         private void MainText_TextChanged(object sender, TextChangedEventArgs e)
         {
             String TextLength = "Characters: " + MainText.Text.Length.ToString();
             //TODO: Update LineCount after layout update
-            String NumberOfRows = "Rows: " + MainText.LineCount.ToString();
+            //String NumberOfRows = "Rows: " + MainText.LineCount.ToString();
+            String NumberOfRows = "Rows: " + MainText.Text.Split('\n').Length;
             string[] s = new string[] { TextLength, NumberOfRows };
 
             MainStatusBar_Text.Text = string.Join(" | ", s);
@@ -134,6 +152,18 @@ namespace PasteOnlyText
             {
                 e.CanExecute = false;
             }
+        }
+
+        public static RoutedCommand Command_Exit = new RoutedCommand();
+
+        private void ExecutedExitCommand(object sender, ExecutedRoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private void CanExecuteCommand(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
         }
     }
 }
