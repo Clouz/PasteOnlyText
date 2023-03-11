@@ -29,6 +29,10 @@
                     Executed="ExecutedTextModifierCommand_Reset"
                     CanExecute="CanExecuteTextModifierCommand" />
 
+        <CommandBinding Command="{x:Static local:MainWindow.TextModifierTextModifierFind}"
+                    Executed="ExecutedTextModifierFind"
+                    CanExecute="CanExecuteTextModifierCommand" />
+
         <CommandBinding Command="{x:Static local:MainWindow.Command_Exit}"
                     Executed="ExecutedExitCommand"
                     CanExecute="CanExecuteCommand" />
@@ -40,6 +44,7 @@
         <KeyBinding Key="X" Modifiers="Ctrl+Shift" Command="{x:Static local:MainWindow.TextModifierCommand_InitialUppercase}"/>
         <KeyBinding Key="C" Modifiers="Ctrl+Shift" Command="{x:Static local:MainWindow.TextModifierCommand_FirstUppercase}"/>
         <KeyBinding Key="S" Modifiers="Ctrl+Shift" Command="{x:Static local:MainWindow.TextModifierCommand_Reset}"/>
+        <KeyBinding Key="F" Modifiers="Ctrl" Command="{x:Static local:MainWindow.TextModifierTextModifierFind}"/>
         <KeyBinding Key="Esc"  Command="{x:Static local:MainWindow.Command_Exit}"/>
     </Window.InputBindings>
 
@@ -67,16 +72,39 @@
             </MenuItem>
         </Menu>
 
-        <Grid DockPanel.Dock="Bottom">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="20"/>
-        </Grid.RowDefinitions>
-
-            <TextBox Name="MainText" Grid.Row="0" TextChanged="MainText_TextChanged" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" AcceptsTab="True"/>
-        <StatusBar Name="MainStatusBar" Grid.Row="1">
+        <StatusBar Name="MainStatusBar" DockPanel.Dock="Bottom">
             <TextBlock Name="MainStatusBar_Text" />
         </StatusBar>
-    </Grid>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition MinWidth="300" Width="2*"/>
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <TextBox Name="MainText" Grid.ColumnSpan="2" TabIndex="0" Grid.Column="0" TextChanged="MainText_TextChanged" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" AcceptsTab="True"/>
+
+            <GridSplitter Name="FindSplitter" Visibility="Collapsed" Grid.Column ="0" Width="5" HorizontalAlignment="Right" VerticalAlignment="Stretch" ResizeBehavior="CurrentAndNext"/>
+            
+            <Grid Grid.Column="1" Name="FindGrid" Visibility="Collapsed">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="20" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="20" />
+                    <RowDefinition Height="20" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <TextBox Name="FindText" TabIndex="1" MinWidth="100" Grid.Column="0" Grid.Row="0" />
+                <Button Name="FindButton" Grid.Column="1" Grid.Row="0" />
+
+                <TextBox Name="ReplaceText" TabIndex="2" MinWidth="100" Grid.Column="0" Grid.Row="1" />
+                <Button Name="ReplaceButton" Grid.Column="1" Grid.Row="1" />
+
+                <ListBox Name="ResultList" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" />
+            </Grid>
+        </Grid>
     </DockPanel>
 </Window>

@@ -72,15 +72,16 @@ namespace PasteOnlyText
             Clipboard.SetText(MainText.Text);
         }
 
-        private void MainText_TextChanged(object sender, TextChangedEventArgs e)
+        private async void MainText_TextChanged(object sender, TextChangedEventArgs e)
         {
+            await Task.Delay(500);
+
             String TextLength = "Characters: " + MainText.Text.Length.ToString();
-            //TODO: Update LineCount after layout update
-            //String NumberOfRows = "Rows: " + MainText.LineCount.ToString();
             String NumberOfRows = "Rows: " + MainText.Text.Split('\n').Length;
             string[] s = new string[] { TextLength, NumberOfRows };
 
             MainStatusBar_Text.Text = string.Join(" | ", s);
+
         }
 
 
@@ -138,6 +139,29 @@ namespace PasteOnlyText
         private void ExecutedTextModifierCommand_Reset(object sender, ExecutedRoutedEventArgs e)
         {
             MainText.Text = SourceString;
+        }
+
+        private bool hideFind = false;
+
+        public static RoutedCommand TextModifierTextModifierFind = new RoutedCommand();
+
+        private void ExecutedTextModifierFind(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (hideFind)
+            {
+                FindGrid.Visibility = Visibility.Collapsed;
+                FindSplitter.Visibility = Visibility.Collapsed;
+                Grid.SetColumnSpan(MainText, 2);
+                MainText.Focus();
+                hideFind = false;
+            } else
+            {
+                FindGrid.Visibility = Visibility.Visible;
+                FindSplitter.Visibility = Visibility.Visible;
+                Grid.SetColumnSpan(MainText, 1);
+                FindText.Focus();
+                hideFind = true;
+            }
         }
 
         private void CanExecuteTextModifierCommand(object sender, CanExecuteRoutedEventArgs e)
