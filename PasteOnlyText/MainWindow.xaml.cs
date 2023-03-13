@@ -143,7 +143,7 @@ namespace PasteOnlyText
 
         private bool hideFind = false;
 
-        public static RoutedCommand TextModifierTextModifierFind = new RoutedCommand();
+        public static RoutedCommand TextModifierFind = new RoutedCommand();
 
         private void ExecutedTextModifierFind(object sender, ExecutedRoutedEventArgs e)
         {
@@ -162,6 +162,14 @@ namespace PasteOnlyText
                 FindText.Focus();
                 hideFind = true;
             }
+        }
+
+        public static RoutedCommand TextModifierFindText = new RoutedCommand();
+
+        private void ExecutedTextModifierFindText(object sender, ExecutedRoutedEventArgs e)
+        {
+
+
         }
 
         private void CanExecuteTextModifierCommand(object sender, CanExecuteRoutedEventArgs e)
@@ -188,6 +196,61 @@ namespace PasteOnlyText
         private void CanExecuteCommand(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = true;
+        }
+
+        private void FindButton_Click(object sender, RoutedEventArgs e)
+        {
+            FindAndReplace FR = new FindAndReplace();
+            FR.BaseText = MainText.Text;
+            FR.Find2(FindText.Text);
+
+            ResultList.ItemsSource = FR.Result2;
+        }
+    }
+
+    public class FindAndReplace
+    {
+        private string _baseText = "";
+        public string BaseText { get { return _baseText; } set { _baseText = value; } }
+
+        private bool _regEx;
+        public bool RegEx { get { return _regEx;} set { _regEx = value; } }
+
+        public List<ResultItem>? Result2;
+
+        public class ResultItem
+        {
+            public string? Text { get; set; }
+            public int Position { get; set; }
+        }
+
+
+        public IEnumerable<int> Find(string Text)
+        {
+            int minIndex = _baseText.IndexOf(Text);
+            while (minIndex != -1)
+            {
+                yield return minIndex;
+                minIndex = _baseText.IndexOf(Text, minIndex + Text.Length);
+            }
+        }
+
+        //TODO: Apply it for case unsensitive also
+        public void Find2(string Text)
+        {
+            Result2 = new List<ResultItem>();
+
+            int minIndex = _baseText.IndexOf(Text);
+            while (minIndex != -1)
+            {
+                Result2.Add(new ResultItem() { Position = minIndex , Text = "Prova"});
+                minIndex = _baseText.IndexOf(Text, minIndex + Text.Length);
+            }
+        }
+
+        public string Replace(string find, string replace)
+        {
+            return _baseText.Replace(find, replace);
         }
     }
 }
