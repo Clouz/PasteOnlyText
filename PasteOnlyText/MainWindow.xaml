@@ -33,10 +33,6 @@
                     Executed="ExecutedTextModifierFind"
                     CanExecute="CanExecuteTextModifierCommand" />
 
-        <CommandBinding Command="{x:Static local:MainWindow.TextModifierFindText}"
-                    Executed="ExecutedTextModifierFindText"
-                    CanExecute="CanExecuteTextModifierCommand" />
-
         <CommandBinding Command="{x:Static local:MainWindow.Command_Exit}"
                     Executed="ExecutedExitCommand"
                     CanExecute="CanExecuteCommand" />
@@ -101,20 +97,19 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <TextBox Name="FindText" TabIndex="1" MinWidth="100" Grid.Column="0" Grid.Row="0" >
-                    <TextBox.InputBindings>
-                        <KeyBinding Command="{Binding Path=TextModifierFindText}" Key="Return"></KeyBinding>
-                    </TextBox.InputBindings>  
-                </TextBox>
+                <TextBox Name="FindText" TabIndex="1" MinWidth="100" Grid.Column="0" Grid.Row="0" TextChanged="FindButton_Click" />
                 <Button Name="FindButton" Grid.Column="1" Grid.Row="0" Click="FindButton_Click"/>
 
                 <TextBox Name="ReplaceText" TabIndex="2" MinWidth="100" Grid.Column="0" Grid.Row="1" />
-                <Button Name="ReplaceButton" Grid.Column="1" Grid.Row="1" />
+                <Button Name="ReplaceButton" Grid.Column="1" Grid.Row="1" Click="ReplaceButton_Click"/>
 
                 <ListBox Name="ResultList" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" >
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Position}"/>
+                            <StackPanel>
+                                <TextBlock Text="{Binding Text}"/>
+                                <TextBlock Text="{Binding Position}"/>
+                            </StackPanel>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>

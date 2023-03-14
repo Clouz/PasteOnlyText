@@ -33,6 +33,8 @@ namespace PasteOnlyText
             }
         }
 
+        private FindAndReplace FR = new FindAndReplace();
+
         private string? ClipboardDataString
         {
             get {
@@ -84,9 +86,7 @@ namespace PasteOnlyText
 
         }
 
-
         // COMMAND
-
         public static RoutedCommand TextModifierCommand_Uppercase = new RoutedCommand();
         public static RoutedCommand TextModifierCommand_Lowercase = new RoutedCommand();
         public static RoutedCommand TextModifierCommand_InitialUppercase = new RoutedCommand();
@@ -164,14 +164,6 @@ namespace PasteOnlyText
             }
         }
 
-        public static RoutedCommand TextModifierFindText = new RoutedCommand();
-
-        private void ExecutedTextModifierFindText(object sender, ExecutedRoutedEventArgs e)
-        {
-
-
-        }
-
         private void CanExecuteTextModifierCommand(object sender, CanExecuteRoutedEventArgs e)
         {
             Control? target = e.Source as Control;
@@ -200,11 +192,17 @@ namespace PasteOnlyText
 
         private void FindButton_Click(object sender, RoutedEventArgs e)
         {
-            FindAndReplace FR = new FindAndReplace();
+            
             FR.BaseText = MainText.Text;
-            FR.Find2(FindText.Text);
+            FR.Find(FindText.Text);
 
-            ResultList.ItemsSource = FR.Result2;
+            ResultList.ItemsSource = FR.Result;
+        }
+
+        private void ReplaceButton_Click(object sender, RoutedEventArgs e)
+        {
+            MainText.Text = FR.Replace(FindText.Text, ReplaceText.Text);
+            FR.ResetResult();
         }
     }
 
@@ -216,7 +214,13 @@ namespace PasteOnlyText
         private bool _regEx;
         public bool RegEx { get { return _regEx;} set { _regEx = value; } }
 
-        public List<ResultItem>? Result2;
+        private bool _caseSensitive = false;
+        public bool CaseSensitive { get { return _caseSensitive; } set { _caseSensitive = value; } }
+
+        private int _trimLength = 10;
+        public int TrimLength { get { return _trimLength; } set { _trimLength = (value < 0 ? 0 : value); } }
+
+        public List<ResultItem>? Result;
 
         public class ResultItem
         {
@@ -224,33 +228,38 @@ namespace PasteOnlyText
             public int Position { get; set; }
         }
 
-
-        public IEnumerable<int> Find(string Text)
+        public void Find(string Text)
         {
-            int minIndex = _baseText.IndexOf(Text);
-            while (minIndex != -1)
+            if (Text == "")
             {
-                yield return minIndex;
-                minIndex = _baseText.IndexOf(Text, minIndex + Text.Length);
+                Result = new List<ResultItem>();
+                return;
             }
-        }
 
-        //TODO: Apply it for case unsensitive also
-        public void Find2(string Text)
-        {
-            Result2 = new List<ResultItem>();
+            Result = new List<ResultItem>();
 
-            int minIndex = _baseText.IndexOf(Text);
+            StringComparison StringComp = _caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
+
+            int minIndex = _baseText.IndexOf(Text , StringComp);
             while (minIndex != -1)
             {
-                Result2.Add(new ResultItem() { Position = minIndex , Text = "Prova"});
-                minIndex = _baseText.IndexOf(Text, minIndex + Text.Length);
+
+                int stringMinIndex = (minIndex - TrimLength) >= 0 ? minIndex - TrimLength : 0;
+                int stringLength = (minIndex + Text.Length + TrimLength ) <= _baseText.Length ? minIndex-stringMinIndex + Text.Length + TrimLength : _baseText.Length - stringMinIndex;
+
+                Result.Add(new ResultItem() { Position = minIndex , Text = _baseText.Substring(stringMinIndex, stringLength)});
+                minIndex = _baseText.IndexOf(Text, minIndex + Text.Length, StringComp);
             }
         }
 
         public string Replace(string find, string replace)
         {
             return _baseText.Replace(find, replace);
+        }
+
+        public void ResetResult()
+        {
+            Result = new List<ResultItem>();
         }
     }
 }
