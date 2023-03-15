@@ -5,6 +5,7 @@ using System.ComponentModel.Design;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -214,11 +215,22 @@ namespace PasteOnlyText
         private bool _regEx;
         public bool RegEx { get { return _regEx;} set { _regEx = value; } }
 
+        private bool _unescape = true;
+        public bool Unescape { get { return _unescape; } set { _unescape = value; } }
+
         private bool _caseSensitive = false;
         public bool CaseSensitive { get { return _caseSensitive; } set { _caseSensitive = value; } }
 
+        private StringComparison StringComp { get { return _caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase; } }
+
         private int _trimLength = 10;
         public int TrimLength { get { return _trimLength; } set { _trimLength = (value < 0 ? 0 : value); } }
+
+        private string _findText = "";
+        private string FindText { get { return _unescape ? System.Text.RegularExpressions.Regex.Unescape(_findText) : _findText; } set { _findText = value; } }
+
+        private string _replaceText = "";
+        private string ReplaceText { get { return _unescape ? System.Text.RegularExpressions.Regex.Unescape(_replaceText) : _replaceText; } set { _replaceText = value; } }
 
         public List<ResultItem>? Result;
 
@@ -230,6 +242,12 @@ namespace PasteOnlyText
 
         public void Find(string Text)
         {
+            FindText = Text;
+            FindF(FindText);
+        }
+
+        private void FindF(string Text)
+        {
             if (Text == "")
             {
                 Result = new List<ResultItem>();
@@ -238,23 +256,24 @@ namespace PasteOnlyText
 
             Result = new List<ResultItem>();
 
-            StringComparison StringComp = _caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
-
-            int minIndex = _baseText.IndexOf(Text , StringComp);
+            int minIndex = _baseText.IndexOf(Text, StringComp);
             while (minIndex != -1)
             {
 
                 int stringMinIndex = (minIndex - TrimLength) >= 0 ? minIndex - TrimLength : 0;
-                int stringLength = (minIndex + Text.Length + TrimLength ) <= _baseText.Length ? minIndex-stringMinIndex + Text.Length + TrimLength : _baseText.Length - stringMinIndex;
+                int stringLength = (minIndex + Text.Length + TrimLength) <= _baseText.Length ? minIndex - stringMinIndex + Text.Length + TrimLength : _baseText.Length - stringMinIndex;
 
-                Result.Add(new ResultItem() { Position = minIndex , Text = _baseText.Substring(stringMinIndex, stringLength)});
+                Result.Add(new ResultItem() { Position = minIndex, Text = _baseText.Substring(stringMinIndex, stringLength) });
                 minIndex = _baseText.IndexOf(Text, minIndex + Text.Length, StringComp);
             }
         }
 
         public string Replace(string find, string replace)
         {
-            return _baseText.Replace(find, replace);
+            FindText = find;
+            ReplaceText = replace;
+
+            return _baseText.Replace(System.Text.RegularExpressions.Regex.Unescape(FindText), System.Text.RegularExpressions.Regex.Unescape(ReplaceText), StringComp);
         }
 
         public void ResetResult()
