@@ -85,8 +85,8 @@
             <TextBox Name="MainText" Grid.ColumnSpan="2" TabIndex="0" Grid.Column="0" TextChanged="MainText_TextChanged" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" AcceptsTab="True"/>
 
             <GridSplitter Name="FindSplitter" Visibility="Collapsed" Grid.Column ="0" Width="5" HorizontalAlignment="Right" VerticalAlignment="Stretch" ResizeBehavior="CurrentAndNext"/>
-            
-            <Grid Grid.Column="1" Name="FindGrid" Visibility="Collapsed">
+
+            <Grid Grid.Column="1" Name="FindGrid" Visibility="Collapsed" FocusManager.IsFocusScope="True">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="20" />
@@ -107,7 +107,9 @@
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel>
-                                <TextBlock Text="{Binding Text}"/>
+                                <TextBlock>
+                                    <Run Text="{Binding TextBefore}" /><Run FontWeight="Bold" Text="{Binding Text}" /><Run Text="{Binding TextAfter}" />
+                                </TextBlock>
                                 <TextBlock Text="{Binding Position}"/>
                             </StackPanel>
                         </DataTemplate>

@@ -203,7 +203,7 @@ namespace PasteOnlyText
         private void ReplaceButton_Click(object sender, RoutedEventArgs e)
         {
             MainText.Text = FR.Replace(FindText.Text, ReplaceText.Text);
-            FR.ResetResult();
+            FindButton_Click(sender, e);
         }
     }
 
@@ -237,6 +237,8 @@ namespace PasteOnlyText
         public class ResultItem
         {
             public string? Text { get; set; }
+            public string? TextBefore { get; set; }
+            public string? TextAfter { get; set; }
             public int Position { get; set; }
         }
 
@@ -261,9 +263,22 @@ namespace PasteOnlyText
             {
 
                 int stringMinIndex = (minIndex - TrimLength) >= 0 ? minIndex - TrimLength : 0;
+                int stringMinIndexLength = minIndex - stringMinIndex;
+
+                int stringMaxIndex = minIndex + Text.Length;
+                int stringMaxLength = (minIndex + Text.Length + TrimLength) <= _baseText.Length ? TrimLength : _baseText.Length - stringMaxIndex;
                 int stringLength = (minIndex + Text.Length + TrimLength) <= _baseText.Length ? minIndex - stringMinIndex + Text.Length + TrimLength : _baseText.Length - stringMinIndex;
 
-                Result.Add(new ResultItem() { Position = minIndex, Text = _baseText.Substring(stringMinIndex, stringLength) });
+
+                ResultItem rs = new ResultItem()
+                {
+                    Position = minIndex,
+                    Text = _baseText.Substring(minIndex, Text.Length),
+                    TextBefore = _baseText.Substring(stringMinIndex, stringMinIndexLength),
+                    TextAfter = _baseText.Substring(stringMaxIndex, stringMaxLength)
+                };
+
+                Result.Add(rs);
                 minIndex = _baseText.IndexOf(Text, minIndex + Text.Length, StringComp);
             }
         }
