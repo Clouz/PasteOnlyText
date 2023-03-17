@@ -65,6 +65,7 @@ namespace PasteOnlyText
         public MainWindow()
         {
             InitializeComponent();
+            this.DataContext = this;
 
             SourceString = ClipboardDataString;
 
@@ -79,12 +80,19 @@ namespace PasteOnlyText
         {
             await Task.Delay(500);
 
-            String TextLength = "Characters: " + MainText.Text.Length.ToString();
-            String NumberOfRows = "Rows: " + MainText.Text.Split('\n').Length;
-            string[] s = new string[] { TextLength, NumberOfRows };
+            MainStatusBar_Text.Text = StatusBarText();
 
-            MainStatusBar_Text.Text = string.Join(" | ", s);
+        }
 
+        private string StatusBarText()
+        {
+            string TextLength = "Characters: " + MainText.Text.Length.ToString();
+            string NumberOfRows = "Rows: " + MainText.Text.Split('\n').Length;
+            //string Position = "Position: " + MainText.SelectionStart;
+            string FindResultCount = ResultList.Items.Count > 0 && FindGrid.Visibility != Visibility.Collapsed ? "Result: " + ResultList.Items.Count.ToString() : "";    
+            string[] s = new string[] { TextLength, NumberOfRows, FindResultCount };
+
+             return string.Join(" | ", s);
         }
 
         // COMMAND
@@ -198,12 +206,34 @@ namespace PasteOnlyText
             FR.Find(FindText.Text);
 
             ResultList.ItemsSource = FR.Result;
+            MainStatusBar_Text.Text = StatusBarText();
         }
 
         private void ReplaceButton_Click(object sender, RoutedEventArgs e)
         {
             MainText.Text = FR.Replace(FindText.Text, ReplaceText.Text);
             FindButton_Click(sender, e);
+        }
+
+        private void ResultList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (ResultList.SelectedItem != null)
+            {
+                var i = ResultList.SelectedIndex;
+                var item = ResultList.SelectedItem as FindAndReplace.ResultItem;
+                MainText.Focus();
+                MainText.Select(item!.Position, item.Text!.Length);
+
+                ResultList.SelectedItem = ResultList.Items[i];
+                ResultList.UpdateLayout();  
+                var listBoxItem = (ListBoxItem) ResultList.ItemContainerGenerator.ContainerFromItem(ResultList.SelectedItem);
+                ResultList.Focus();
+            }
+        }
+
+        private void MainText_LostFocus(object sender, RoutedEventArgs e)
+        {
+            e.Handled = true;
         }
     }
 
@@ -288,7 +318,14 @@ namespace PasteOnlyText
             FindText = find;
             ReplaceText = replace;
 
-            return _baseText.Replace(System.Text.RegularExpressions.Regex.Unescape(FindText), System.Text.RegularExpressions.Regex.Unescape(ReplaceText), StringComp);
+            //TODO: If find is empty return Nul and manage it
+            if (FindText != "")
+            {
+                return _baseText.Replace(System.Text.RegularExpressions.Regex.Unescape(FindText), System.Text.RegularExpressions.Regex.Unescape(ReplaceText), StringComp);
+            } else
+            {
+                return _baseText;
+            }
         }
 
         public void ResetResult()

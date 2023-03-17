@@ -7,4 +7,39 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="Resources\Find.ico" />
+    <None Remove="Resources\FindInFile.png" />
+    <None Remove="Resources\FindNext.png" />
+    <None Remove="Resources\FindSymbol.png" />
+    <None Remove="Resources\RegularExpression.png" />
+    <None Remove="Resources\ReplaceAll.png" />
+    <None Remove="Resources\TextElement.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Find.ico" />
+    <Resource Include="Resources\FindInFile.png" />
+    <Resource Include="Resources\FindNext.png" />
+    <Resource Include="Resources\FindSymbol.png" />
+    <Resource Include="Resources\RegularExpression.png" />
+    <Resource Include="Resources\ReplaceAll.png" />
+    <Resource Include="Resources\TextElement.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
 </Project>

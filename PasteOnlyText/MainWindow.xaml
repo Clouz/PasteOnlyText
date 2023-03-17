@@ -49,7 +49,7 @@
     </Window.InputBindings>
 
     <DockPanel>
-        <Menu DockPanel.Dock="Top">
+        <Menu DockPanel.Dock="Top" KeyboardNavigation.IsTabStop="False">
             <MenuItem Header="_File">
                 <MenuItem Header="_Save Image..." />
                 <MenuItem Header="_Settings..." />
@@ -58,6 +58,7 @@
             </MenuItem>
             
             <MenuItem Header="_Edit">
+                <MenuItem Header="_Find and replace" Command="{x:Static local:MainWindow.TextModifierFind}" InputGestureText="Ctrl+F"/>
             </MenuItem>
 
             <MenuItem Header="_Tools">
@@ -72,7 +73,7 @@
             </MenuItem>
         </Menu>
 
-        <StatusBar Name="MainStatusBar" DockPanel.Dock="Bottom">
+        <StatusBar Name="MainStatusBar" DockPanel.Dock="Bottom" KeyboardNavigation.IsTabStop="False">
             <TextBlock Name="MainStatusBar_Text" />
         </StatusBar>
 
@@ -81,12 +82,12 @@
                 <ColumnDefinition MinWidth="300" Width="2*"/>
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-
-            <TextBox Name="MainText" Grid.ColumnSpan="2" TabIndex="0" Grid.Column="0" TextChanged="MainText_TextChanged" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" AcceptsTab="True"/>
+            
+            <TextBox Name="MainText" Grid.ColumnSpan="2" TabIndex="0" Grid.Column="0" TextChanged="MainText_TextChanged" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" AcceptsTab="True" LostFocus="MainText_LostFocus"/>
 
             <GridSplitter Name="FindSplitter" Visibility="Collapsed" Grid.Column ="0" Width="5" HorizontalAlignment="Right" VerticalAlignment="Stretch" ResizeBehavior="CurrentAndNext"/>
 
-            <Grid Grid.Column="1" Name="FindGrid" Visibility="Collapsed" FocusManager.IsFocusScope="True">
+            <Grid Grid.Column="1" Name="FindGrid" Visibility="Collapsed" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="20" />
@@ -94,23 +95,45 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="20" />
                     <RowDefinition Height="20" />
+                    <RowDefinition Height="20" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <TextBox Name="FindText" TabIndex="1" MinWidth="100" Grid.Column="0" Grid.Row="0" TextChanged="FindButton_Click" />
-                <Button Name="FindButton" Grid.Column="1" Grid.Row="0" Click="FindButton_Click"/>
+                <TextBox  Name="FindText" TabIndex="1" MinWidth="100" Grid.Column="0" Grid.Row="0" TextChanged="FindButton_Click" />
+                <Button Name="FindButton" Grid.Column="1" Grid.Row="0" Click="FindButton_Click" >
+                    <Image Source="/Resources/FindInFile.png" />
+                </Button>
 
-                <TextBox Name="ReplaceText" TabIndex="2" MinWidth="100" Grid.Column="0" Grid.Row="1" />
-                <Button Name="ReplaceButton" Grid.Column="1" Grid.Row="1" Click="ReplaceButton_Click"/>
+                <DockPanel Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Left">
+                    <ToggleButton Name="ButtonRegEx" IsChecked="{Binding FR.RegEx}">
+                        <Image Source="/Resources/RegularExpression.png" />
+                    </ToggleButton>
+                    <ToggleButton IsChecked="{Binding FR.CaseSensitive}">
+                        <Image Source="/Resources/TextElement.png" />
+                    </ToggleButton>
+                    <ToggleButton IsChecked="{Binding FR.Unescape}">
+                        <Image Source="/Resources/FindSymbol.png" />
+                    </ToggleButton>
+                </DockPanel>
 
-                <ListBox Name="ResultList" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" >
+                <TextBox Name="ReplaceText" TabIndex="2" MinWidth="100" Grid.Column="0" Grid.Row="2" />
+                <Button Name="ReplaceButton" Grid.Column="1" Grid.Row="2" Click="ReplaceButton_Click" >
+                    <Image Source="/Resources/ReplaceAll.png" />
+                </Button>
+
+
+
+                <ListBox Name="ResultList" TabIndex="3" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="3" SelectionChanged="ResultList_SelectionChanged" KeyboardNavigation.TabNavigation="Cycle" KeyboardNavigation.ControlTabNavigation="Cycle" KeyboardNavigation.DirectionalNavigation="Cycle">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel>
                                 <TextBlock>
                                     <Run Text="{Binding TextBefore}" /><Run FontWeight="Bold" Text="{Binding Text}" /><Run Text="{Binding TextAfter}" />
                                 </TextBlock>
-                                <TextBlock Text="{Binding Position}"/>
+                                <TextBlock >
+                                    <Run Text="Position:" />
+                                    <Run Text="{Binding Position}" />
+                                </TextBlock>
                             </StackPanel>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
