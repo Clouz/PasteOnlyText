@@ -65,7 +65,10 @@ namespace PasteOnlyText
         public MainWindow()
         {
             InitializeComponent();
-            this.DataContext = this;
+
+            ButtonRegEx.DataContext = FR;
+            ButtonCaseSensitive.DataContext = FR;
+            ButtonUnescape.DataContext = FR;
 
             SourceString = ClipboardDataString;
 
@@ -321,7 +324,7 @@ namespace PasteOnlyText
             //TODO: If find is empty return Nul and manage it
             if (FindText != "")
             {
-                return _baseText.Replace(System.Text.RegularExpressions.Regex.Unescape(FindText), System.Text.RegularExpressions.Regex.Unescape(ReplaceText), StringComp);
+                return _baseText.Replace(FindText, ReplaceText, StringComp);
             } else
             {
                 return _baseText;

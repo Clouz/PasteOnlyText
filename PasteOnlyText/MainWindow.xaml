@@ -105,13 +105,13 @@
                 </Button>
 
                 <DockPanel Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Left">
-                    <ToggleButton Name="ButtonRegEx" IsChecked="{Binding FR.RegEx}">
+                    <ToggleButton Name="ButtonRegEx" IsChecked="{Binding RegEx, Mode=TwoWay}">
                         <Image Source="/Resources/RegularExpression.png" />
                     </ToggleButton>
-                    <ToggleButton IsChecked="{Binding FR.CaseSensitive}">
+                    <ToggleButton Name="ButtonCaseSensitive" IsChecked="{Binding CaseSensitive, Mode=TwoWay}">
                         <Image Source="/Resources/TextElement.png" />
                     </ToggleButton>
-                    <ToggleButton IsChecked="{Binding FR.Unescape}">
+                    <ToggleButton Name="ButtonUnescape" IsChecked="{Binding Unescape, Mode=TwoWay}">
                         <Image Source="/Resources/FindSymbol.png" />
                     </ToggleButton>
                 </DockPanel>
