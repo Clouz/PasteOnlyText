@@ -278,18 +278,23 @@ namespace PasteOnlyText
         public void Find(string Text)
         {
             FindText = Text;
-            FindF(FindText);
+            if (RegEx)
+            {
+                FindRegEx(FindText);
+            } else
+            {
+                FindF(FindText);
+            }
         }
 
         private void FindF(string Text)
         {
+            Result = new List<ResultItem>();
+
             if (Text == "")
             {
-                Result = new List<ResultItem>();
                 return;
             }
-
-            Result = new List<ResultItem>();
 
             int minIndex = _baseText.IndexOf(Text, StringComp);
             while (minIndex != -1)
@@ -313,6 +318,56 @@ namespace PasteOnlyText
 
                 Result.Add(rs);
                 minIndex = _baseText.IndexOf(Text, minIndex + Text.Length, StringComp);
+            }
+        }
+
+        private void FindRegEx(string Text)
+        {
+            //TODO run this function Async
+            Result = new List<ResultItem>();
+
+            if (Text == "")
+            {
+                return;
+            }
+
+            try
+            {
+
+                string pattern = Text;
+                Regex rgx = new Regex(pattern, RegexOptions.IgnoreCase);
+
+                MatchCollection matches = rgx.Matches(_baseText);
+
+                if (matches.Count > 0)
+                {
+
+                    foreach (Match match in matches)
+                    {
+                        int minIndex = match.Index;
+
+                        int stringMinIndex = (minIndex - TrimLength) >= 0 ? minIndex - TrimLength : 0;
+                        int stringMinIndexLength = minIndex - stringMinIndex;
+
+                        int stringMaxIndex = minIndex + Text.Length;
+                        int stringMaxLength = (minIndex + Text.Length + TrimLength) <= _baseText.Length ? TrimLength : _baseText.Length - stringMaxIndex;
+                        int stringLength = (minIndex + Text.Length + TrimLength) <= _baseText.Length ? minIndex - stringMinIndex + Text.Length + TrimLength : _baseText.Length - stringMinIndex;
+
+
+                        ResultItem rs = new ResultItem()
+                        {
+                            Position = minIndex,
+                            Text = _baseText.Substring(minIndex, Text.Length),
+                            TextBefore = _baseText.Substring(stringMinIndex, stringMinIndexLength),
+                            TextAfter = _baseText.Substring(stringMaxIndex, stringMaxLength)
+                        };
+
+                        Result.Add(rs);
+                    }
+                }
+            } catch
+            {
+
             }
         }
 
